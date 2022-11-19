@@ -10,7 +10,7 @@ function App() {
   };
 
   const handleRenderDay = (d: Date) => {
-    return <div>{format(d, "dd MMM")}</div>;
+    return <div onClick={() => setDate(d)}>{format(d, "dd MMM")}</div>;
   };
 
   const handleRenderMonthTitle = (d: Date) => {

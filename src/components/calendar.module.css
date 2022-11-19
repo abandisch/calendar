@@ -16,3 +16,12 @@
 .today-nav {
   grid-column-start: span 1;
 }
+
+.day:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.selected-day {
+  background-color: #eee;
+}

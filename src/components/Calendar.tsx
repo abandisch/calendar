@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
 import {
   format as formatDate,
   differenceInCalendarYears as diffYears,
   startOfMonth,
   addMonths,
   addYears,
+  isSameDay,
 } from "date-fns";
 import Cell from "./Cell";
 import css from "./calendar.module.css";
@@ -34,9 +36,13 @@ function Calendar({
   onRenderDay,
   onRenderMonthTitle,
 }: Props) {
-  const [currentDate, setCurrentDate] = useState(
-    startOfMonth(date || new Date())
-  );
+  const [currentDate, setCurrentDate] = useState(date || new Date());
+
+  useEffect(() => {
+    if (date) {
+      setCurrentDate(date);
+    }
+  }, [date]);
 
   const monthFormat = () => {
     const isCurrentYear = diffYears(currentDate, new Date()) === 0;
@@ -49,23 +55,19 @@ function Calendar({
   const postfixDates = monthCal.postfixDates;
 
   const handleGoToToday = () => {
-    const newDate = startOfMonth(new Date());
+    const newDate = new Date();
     setCurrentDate(newDate);
     onChange && onChange(newDate);
   };
 
   const handleChangeMonth = (direction: "forward" | "backward") => () => {
-    const newDate = startOfMonth(
-      addMonths(currentDate, direction === "backward" ? -1 : 1)
-    );
+    const newDate = addMonths(currentDate, direction === "backward" ? -1 : 1);
     setCurrentDate(newDate);
     onChange && onChange(newDate);
   };
 
   const handleChangeYear = (direction: "forward" | "backward") => () => {
-    const newDate = startOfMonth(
-      addYears(currentDate, direction === "backward" ? -1 : 1)
-    );
+    const newDate = addYears(currentDate, direction === "backward" ? -1 : 1);
     setCurrentDate(newDate);
     onChange && onChange(newDate);
   };
@@ -98,7 +100,10 @@ function Calendar({
 
       {Array.from({ length: prefixDates.length }).map((_, i) => {
         return (
-          <Cell key={`prefix-${i}`} className={css["empty-day"]}>
+          <Cell
+            key={`prefix-${i}`}
+            className={clsx(showPrefixDates && css["day"])}
+          >
             {showPrefixDates ? (
               onRenderDay ? (
                 onRenderDay(prefixDates[i])
@@ -113,7 +118,13 @@ function Calendar({
       })}
 
       {Array.from({ length: daysInMonth }).map((_, i) => (
-        <Cell key={`num-days-${i}`} className={css["day"]}>
+        <Cell
+          key={`num-days-${i}`}
+          className={clsx(
+            css["day"],
+            currentDate.getDate() === i + 1 && css["selected-day"]
+          )}
+        >
           {onRenderDay
             ? onRenderDay(
                 new Date(
@@ -128,7 +139,10 @@ function Calendar({
 
       {Array.from({ length: postfixDates.length }).map((_, i) => {
         return (
-          <Cell key={`postfix-${i}`} className={css["empty-day"]}>
+          <Cell
+            key={`postfix-${i}`}
+            className={clsx(showPostfixDates && css["day"])}
+          >
             {showPostfixDates ? (
               onRenderDay ? (
                 onRenderDay(postfixDates[i])
