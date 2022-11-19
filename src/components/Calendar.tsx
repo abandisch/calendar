@@ -11,11 +11,13 @@ import css from "./calendar.module.css";
 import CalendarMonth from "../classes/CalendarMonth";
 
 interface Props {
-  startWeekDay: "monday" | "sunday";
+  startWeekDay?: "monday" | "sunday";
   date?: Date;
   showPrefixDates?: boolean;
   showPostfixDates?: boolean;
+  weekCount?: number;
   onChange?: (date: Date) => void;
+  onRenderCell?: (date: Date) => React.ReactElement;
 }
 
 const WEEK_DAYS_START_SUNDAY = ["S", "M", "T", "W", "T", "F", "S"];
@@ -23,10 +25,12 @@ const WEEK_DAYS_START_MONDAY = ["M", "T", "W", "T", "F", "S", "S"];
 
 function Calendar({
   date,
-  startWeekDay,
-  showPrefixDates,
-  showPostfixDates,
+  startWeekDay = "monday",
+  showPrefixDates = true,
+  showPostfixDates = true,
+  weekCount = 6,
   onChange,
+  onRenderCell,
 }: Props) {
   const [currentDate, setCurrentDate] = useState(
     startOfMonth(date || new Date())
@@ -37,7 +41,7 @@ function Calendar({
     return isCurrentYear ? "MMMM" : "MMMM yyyy";
   };
 
-  const monthCal = new CalendarMonth(currentDate, startWeekDay, 6);
+  const monthCal = new CalendarMonth(currentDate, startWeekDay, weekCount);
   const daysInMonth = monthCal.daysInMonth;
   const prefixDates = monthCal.prefixDates;
   const postfixDates = monthCal.postfixDates;
@@ -91,21 +95,45 @@ function Calendar({
       {Array.from({ length: prefixDates.length }).map((_, i) => {
         return (
           <Cell key={`prefix-${i}`} className={css["empty-day"]}>
-            {showPrefixDates ? prefixDates[i].getDate() : <>&nbsp;</>}
+            {showPrefixDates ? (
+              onRenderCell ? (
+                onRenderCell(prefixDates[i])
+              ) : (
+                prefixDates[i].getDate()
+              )
+            ) : (
+              <>&nbsp;</>
+            )}
           </Cell>
         );
       })}
 
       {Array.from({ length: daysInMonth }).map((_, i) => (
         <Cell key={`num-days-${i}`} className={css["day"]}>
-          {i + 1}
+          {onRenderCell
+            ? onRenderCell(
+                new Date(
+                  currentDate.getFullYear(),
+                  currentDate.getMonth(),
+                  i + 1
+                )
+              )
+            : i + 1}
         </Cell>
       ))}
 
       {Array.from({ length: postfixDates.length }).map((_, i) => {
         return (
           <Cell key={`postfix-${i}`} className={css["empty-day"]}>
-            {showPostfixDates ? postfixDates[i].getDate() : <>&nbsp;</>}
+            {showPostfixDates ? (
+              onRenderCell ? (
+                onRenderCell(postfixDates[i])
+              ) : (
+                postfixDates[i].getDate()
+              )
+            ) : (
+              <>&nbsp;</>
+            )}
           </Cell>
         );
       })}
