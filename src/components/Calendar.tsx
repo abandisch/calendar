@@ -17,7 +17,8 @@ interface Props {
   showPostfixDates?: boolean;
   weekCount?: number;
   onChange?: (date: Date) => void;
-  onRenderCell?: (date: Date) => React.ReactElement;
+  onRenderDay?: (date: Date) => React.ReactElement;
+  onRenderMonthTitle?: (date: Date) => React.ReactElement;
 }
 
 const WEEK_DAYS_START_SUNDAY = ["S", "M", "T", "W", "T", "F", "S"];
@@ -30,7 +31,8 @@ function Calendar({
   showPostfixDates = true,
   weekCount = 6,
   onChange,
-  onRenderCell,
+  onRenderDay,
+  onRenderMonthTitle,
 }: Props) {
   const [currentDate, setCurrentDate] = useState(
     startOfMonth(date || new Date())
@@ -74,7 +76,9 @@ function Calendar({
   return (
     <div className={css.container}>
       <Cell className={css["month-name"]}>
-        {formatDate(currentDate, monthFormat())}
+        {onRenderMonthTitle
+          ? onRenderMonthTitle(currentDate)
+          : formatDate(currentDate, monthFormat())}
       </Cell>
       <Cell className={css["month-nav"]}>
         <button onClick={handleChangeYear("backward")}>{"<<"}</button>
@@ -96,8 +100,8 @@ function Calendar({
         return (
           <Cell key={`prefix-${i}`} className={css["empty-day"]}>
             {showPrefixDates ? (
-              onRenderCell ? (
-                onRenderCell(prefixDates[i])
+              onRenderDay ? (
+                onRenderDay(prefixDates[i])
               ) : (
                 prefixDates[i].getDate()
               )
@@ -110,8 +114,8 @@ function Calendar({
 
       {Array.from({ length: daysInMonth }).map((_, i) => (
         <Cell key={`num-days-${i}`} className={css["day"]}>
-          {onRenderCell
-            ? onRenderCell(
+          {onRenderDay
+            ? onRenderDay(
                 new Date(
                   currentDate.getFullYear(),
                   currentDate.getMonth(),
@@ -126,8 +130,8 @@ function Calendar({
         return (
           <Cell key={`postfix-${i}`} className={css["empty-day"]}>
             {showPostfixDates ? (
-              onRenderCell ? (
-                onRenderCell(postfixDates[i])
+              onRenderDay ? (
+                onRenderDay(postfixDates[i])
               ) : (
                 postfixDates[i].getDate()
               )

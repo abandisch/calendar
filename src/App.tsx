@@ -9,8 +9,12 @@ function App() {
     setDate(d);
   };
 
-  const handleRenderCell = (d: Date) => {
+  const handleRenderDay = (d: Date) => {
     return <div>{format(d, "dd MMM")}</div>;
+  };
+
+  const handleRenderMonthTitle = (d: Date) => {
+    return <div>{format(d, "MMMM yyyy")}</div>;
   };
 
   return (
@@ -18,7 +22,8 @@ function App() {
       <Calendar
         date={date}
         onChange={handleChangeDate}
-        onRenderCell={handleRenderCell}
+        onRenderDay={handleRenderDay}
+        onRenderMonthTitle={handleRenderMonthTitle}
       />
     </div>
   );
