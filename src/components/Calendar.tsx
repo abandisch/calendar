@@ -3,7 +3,6 @@ import {
   format as formatDate,
   differenceInCalendarYears as diffYears,
   startOfMonth,
-  // getDaysInMonth as daysInMonth,
   addMonths,
   addYears,
 } from "date-fns";
@@ -38,7 +37,7 @@ function Calendar({
     return isCurrentYear ? "MMMM" : "MMMM yyyy";
   };
 
-  const monthCal = new CalendarMonth(currentDate, startWeekDay, true);
+  const monthCal = new CalendarMonth(currentDate, startWeekDay, 6);
   const daysInMonth = monthCal.daysInMonth;
   const prefixDates = monthCal.prefixDates;
   const postfixDates = monthCal.postfixDates;

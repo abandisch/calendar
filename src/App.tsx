@@ -5,8 +5,8 @@ function App() {
     <div style={{ margin: "50px 50px", width: 1000 }}>
       <Calendar
         startWeekDay="monday"
-        showPrefixDates={false}
-        showPostfixDates={false}
+        showPrefixDates={true}
+        showPostfixDates={true}
       />
     </div>
   );

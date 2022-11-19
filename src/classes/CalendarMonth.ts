@@ -3,16 +3,16 @@ import { getDaysInMonth, startOfMonth, subMonths, addMonths } from "date-fns";
 class CalendarMonth {
   date: Date;
   startWeek: "monday" | "sunday";
-  equalWeekCount: boolean;
+  minWeeks: number;
 
   constructor(
     date: Date,
     startWeek: "monday" | "sunday" = "sunday",
-    equalWeekCount: boolean = false
+    minWeeks: number = 5
   ) {
     this.date = startOfMonth(date);
     this.startWeek = startWeek;
-    this.equalWeekCount = equalWeekCount;
+    this.minWeeks = minWeeks;
   }
 
   get daysInMonth() {
@@ -46,8 +46,8 @@ class CalendarMonth {
   }
 
   get postfixDayCount() {
-    if (this.equalWeekCount) {
-      return 6 * 7 - (this.daysInMonth + this.prefixDayCount);
+    if (this.minWeeks > 5) {
+      return this.minWeeks * 7 - (this.daysInMonth + this.prefixDayCount);
     }
 
     const isFullMonth = (this.daysInMonth + this.prefixDayCount) % 7 === 0;
