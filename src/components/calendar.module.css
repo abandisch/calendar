@@ -13,6 +13,10 @@
   flex-direction: column;
 }
 
+.outside-month-day {
+  background-color: #eee;
+}
+
 .day-events {
   display: flex;
   flex-direction: column;
@@ -27,10 +31,10 @@
 }
 
 .day:hover {
-  background-color: #eee;
+  background-color: rgb(237, 245, 255);
   cursor: pointer;
 }
 
 .selected-day {
-  background-color: #eee;
+  background-color: rgb(237, 245, 255);
 }
