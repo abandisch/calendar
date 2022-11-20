@@ -11,12 +11,22 @@ import Cell from "./Cell";
 import css from "./calendar.module.css";
 import CalendarMonth from "../classes/CalendarMonth";
 
+export type Event = {
+  id: string | number;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay?: boolean;
+  color?: string;
+};
+
 interface Props {
   startWeekDay?: "monday" | "sunday";
   date?: Date;
   showPrefixDates?: boolean;
   showPostfixDates?: boolean;
   weekCount?: number;
+  events?: Event[];
   onChange?: (date: Date) => void;
   onRenderDayTitle?: (date: Date) => React.ReactElement;
   onRenderMonthTitle?: (date: Date) => React.ReactElement;
@@ -41,7 +51,7 @@ function Calendar({
     if (date && !isSameDay(date, currentDate)) {
       setCurrentDate(date);
     }
-  }, [date]);
+  }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const monthFormat = () => {
     return isSameYear(currentDate, new Date()) ? "MMMM" : "MMMM yyyy";
@@ -54,20 +64,29 @@ function Calendar({
 
   const handleGoToToday = () => {
     const newDate = new Date();
-    setCurrentDate(newDate);
-    onChange && onChange(newDate);
+    changeDate(newDate);
   };
 
   const handleChangeMonth = (direction: "forward" | "backward") => () => {
     const newDate = addMonths(currentDate, direction === "backward" ? -1 : 1);
-    setCurrentDate(newDate);
-    onChange && onChange(newDate);
+    changeDate(newDate);
   };
 
   const handleChangeYear = (direction: "forward" | "backward") => () => {
     const newDate = addYears(currentDate, direction === "backward" ? -1 : 1);
-    setCurrentDate(newDate);
-    onChange && onChange(newDate);
+    changeDate(newDate);
+  };
+
+  const handleClickDay = (newDate: Date) => () => {
+    changeDate(newDate);
+  };
+
+  const changeDate = (d: Date) => {
+    if (onChange) {
+      onChange(d);
+    } else {
+      setCurrentDate(d);
+    }
   };
 
   const weekdays =
@@ -101,6 +120,7 @@ function Calendar({
           <Cell
             key={`prefix-${i}`}
             className={clsx(showPrefixDates && css["day"])}
+            onClick={handleClickDay(prefixDates[i])}
           >
             {showPrefixDates &&
               onRenderDayTitle &&
@@ -113,27 +133,33 @@ function Calendar({
         );
       })}
 
-      {Array.from({ length: daysInMonth }).map((_, i) => (
-        <Cell
-          key={`num-days-${i}`}
-          className={clsx(
-            css["day"],
-            currentDate.getDate() === i + 1 && css["selected-day"]
-          )}
-        >
-          {onRenderDayTitle &&
-            onRenderDayTitle(
-              new Date(currentDate.getFullYear(), currentDate.getMonth(), i + 1)
+      {Array.from({ length: daysInMonth }).map((_, i) => {
+        const d = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          i + 1
+        );
+        return (
+          <Cell
+            key={`num-days-${i}`}
+            className={clsx(
+              css["day"],
+              currentDate.getDate() === i + 1 && css["selected-day"]
             )}
-          {!onRenderDayTitle && <>{i + 1}</>}
-        </Cell>
-      ))}
+            onClick={handleClickDay(d)}
+          >
+            {onRenderDayTitle && onRenderDayTitle(d)}
+            {!onRenderDayTitle && <>{i + 1}</>}
+          </Cell>
+        );
+      })}
 
       {Array.from({ length: postfixDates.length }).map((_, i) => {
         return (
           <Cell
             key={`postfix-${i}`}
             className={clsx(showPostfixDates && css["day"])}
+            onClick={handleClickDay(postfixDates[i])}
           >
             {showPostfixDates &&
               onRenderDayTitle &&
