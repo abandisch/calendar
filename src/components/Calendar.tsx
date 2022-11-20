@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import clsx from "clsx";
 import {
   format as formatDate,
