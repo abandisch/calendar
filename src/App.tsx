@@ -8,7 +8,7 @@ const generateEvents = (date = new Date()) => {
   const month = date.getMonth();
   const year = date.getFullYear();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const colors = ["red", "blue", "green", "purple", "orange"];
+  const colors = ["lightcoral", "lightblue", "lightgreen", "plum", "orange"];
 
   let eventCount = 1;
 
@@ -19,7 +19,7 @@ const generateEvents = (date = new Date()) => {
     events[key] = [];
 
     for (let j = 0; j < randomCount; j++) {
-      const randomColor = Math.floor(Math.random() * 4);
+      const randomColor = Math.floor(Math.random() * 5);
       events[key].push({
         id: `${i}-${j}`,
         title: `Event ${eventCount}`,
@@ -53,18 +53,19 @@ function App() {
     setDate(d);
   };
 
-  const handleRenderDay = (d: Date) => {
-    return <div>{format(d, "dd MMM")}</div>;
-  };
+  // const handleRenderDay = (d: Date) => {
+  //   return <div>{format(d, "dd MMM")}</div>;
+  // };
 
-  const handleRenderMonthTitle = (d: Date) => {
-    return <div>{format(d, "MMMM yyyy")}</div>;
-  };
+  // const handleRenderMonthTitle = (d: Date) => {
+  //   return <div>{format(d, "MMMM yyyy")}</div>;
+  // };
 
   return (
     <div style={{ margin: "50px 50px", width: 1000 }}>
       <Calendar
         date={date}
+        events={events}
         onChange={handleChangeDate}
         // onRenderDayTitle={handleRenderDay}
         // onRenderMonthTitle={handleRenderMonthTitle}

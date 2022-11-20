@@ -5,16 +5,25 @@
   border-left: 1px solid #ccc;
 }
 
+.day {
+  height: 100px;
+  align-items: stretch;
+  justify-content: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-events {
+  display: flex;
+  flex-direction: column;
+}
+
 .month-name {
-  grid-column-start: span 4;
+  grid-column-start: span 5;
 }
 
-.month-nav {
+.cal-nav {
   grid-column-start: span 2;
-}
-
-.today-nav {
-  grid-column-start: span 1;
 }
 
 .day:hover {

@@ -7,6 +7,7 @@ import {
   isSameDay,
   isSameYear,
 } from "date-fns";
+import DayTitle from "./DayTitle";
 import Cell from "./Cell";
 import css from "./calendar.module.css";
 import CalendarMonth from "../classes/CalendarMonth";
@@ -26,7 +27,7 @@ interface Props {
   showPrefixDates?: boolean;
   showPostfixDates?: boolean;
   weekCount?: number;
-  events?: Event[];
+  events?: { [key: string]: Event[] };
   onChange?: (date: Date) => void;
   onRenderDayTitle?: (date: Date) => React.ReactElement;
   onRenderMonthTitle?: (date: Date) => React.ReactElement;
@@ -41,6 +42,7 @@ function Calendar({
   showPrefixDates = true,
   showPostfixDates = true,
   weekCount = 6,
+  events,
   onChange,
   onRenderDayTitle,
   onRenderMonthTitle,
@@ -99,13 +101,11 @@ function Calendar({
           ? onRenderMonthTitle(currentDate)
           : formatDate(currentDate, monthFormat())}
       </Cell>
-      <Cell className={css["month-nav"]}>
+      <Cell className={css["cal-nav"]}>
         <button onClick={handleChangeYear("backward")}>{"<<"}</button>
         <button onClick={handleChangeMonth("backward")}>{"<"}</button>
         <button onClick={handleChangeMonth("forward")}>{">"}</button>
         <button onClick={handleChangeYear("forward")}>{">>"}</button>
-      </Cell>
-      <Cell className={css["today-nav"]}>
         <button onClick={handleGoToToday}>Today</button>
       </Cell>
 
@@ -120,14 +120,16 @@ function Calendar({
           <Cell
             key={`prefix-${i}`}
             className={clsx(showPrefixDates && css["day"])}
-            onClick={handleClickDay(prefixDates[i])}
+            onClick={
+              showPrefixDates ? handleClickDay(prefixDates[i]) : undefined
+            }
           >
             {showPrefixDates &&
               onRenderDayTitle &&
               onRenderDayTitle(prefixDates[i])}
-            {showPrefixDates &&
-              !onRenderDayTitle &&
-              formatDate(prefixDates[i], "d")}
+            {showPrefixDates && !onRenderDayTitle && (
+              <DayTitle date={prefixDates[i]} />
+            )}
             {!showPrefixDates && <>&nbsp;</>}
           </Cell>
         );
@@ -149,7 +151,25 @@ function Calendar({
             onClick={handleClickDay(d)}
           >
             {onRenderDayTitle && onRenderDayTitle(d)}
-            {!onRenderDayTitle && <>{i + 1}</>}
+            {!onRenderDayTitle && <div>{i + 1}</div>}
+            <div className={css["day-events"]}>
+              {events &&
+                events[formatDate(d, "yyyy-MM-dd")] &&
+                events[formatDate(d, "yyyy-MM-dd")].slice(0, 3).map((e) => (
+                  <div
+                    key={e.id}
+                    className={css["day-event"]}
+                    style={{ backgroundColor: e.color }}
+                  >
+                    {e.title}
+                  </div>
+                ))}
+              {events && events[formatDate(d, "yyyy-MM-dd")]?.length > 3 && (
+                <div className={css["day-event"]}>
+                  +{events[formatDate(d, "yyyy-MM-dd")].length - 3} more ...
+                </div>
+              )}
+            </div>
           </Cell>
         );
       })}
@@ -159,7 +179,9 @@ function Calendar({
           <Cell
             key={`postfix-${i}`}
             className={clsx(showPostfixDates && css["day"])}
-            onClick={handleClickDay(postfixDates[i])}
+            onClick={
+              showPostfixDates ? handleClickDay(postfixDates[i]) : undefined
+            }
           >
             {showPostfixDates &&
               onRenderDayTitle &&
