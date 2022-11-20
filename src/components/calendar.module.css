@@ -5,14 +5,36 @@
   border-left: 1px solid #ccc;
 }
 
-.month-name {
-  grid-column-start: span 4;
+.day {
+  height: 100px;
+  align-items: stretch;
+  justify-content: stretch;
+  display: flex;
+  flex-direction: column;
 }
 
-.month-nav {
+.outside-month-day {
+  background-color: #eee;
+}
+
+.day-events {
+  display: flex;
+  flex-direction: column;
+}
+
+.month-name {
+  grid-column-start: span 5;
+}
+
+.cal-nav {
   grid-column-start: span 2;
 }
 
-.today-nav {
-  grid-column-start: span 1;
+.day:hover {
+  background-color: rgb(237, 245, 255);
+  cursor: pointer;
+}
+
+.selected-day {
+  background-color: rgb(237, 245, 255);
 }
