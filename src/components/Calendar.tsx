@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import {
   format as formatDate,
-  differenceInCalendarYears as diffYears,
-  startOfMonth,
   addMonths,
   addYears,
   isSameDay,
+  isSameYear,
 } from "date-fns";
 import Cell from "./Cell";
 import css from "./calendar.module.css";
@@ -19,7 +18,7 @@ interface Props {
   showPostfixDates?: boolean;
   weekCount?: number;
   onChange?: (date: Date) => void;
-  onRenderDay?: (date: Date) => React.ReactElement;
+  onRenderDayTitle?: (date: Date) => React.ReactElement;
   onRenderMonthTitle?: (date: Date) => React.ReactElement;
 }
 
@@ -33,20 +32,19 @@ function Calendar({
   showPostfixDates = true,
   weekCount = 6,
   onChange,
-  onRenderDay,
+  onRenderDayTitle,
   onRenderMonthTitle,
 }: Props) {
   const [currentDate, setCurrentDate] = useState(date || new Date());
 
   useEffect(() => {
-    if (date) {
+    if (date && !isSameDay(date, currentDate)) {
       setCurrentDate(date);
     }
   }, [date]);
 
   const monthFormat = () => {
-    const isCurrentYear = diffYears(currentDate, new Date()) === 0;
-    return isCurrentYear ? "MMMM" : "MMMM yyyy";
+    return isSameYear(currentDate, new Date()) ? "MMMM" : "MMMM yyyy";
   };
 
   const monthCal = new CalendarMonth(currentDate, startWeekDay, weekCount);
@@ -104,15 +102,13 @@ function Calendar({
             key={`prefix-${i}`}
             className={clsx(showPrefixDates && css["day"])}
           >
-            {showPrefixDates ? (
-              onRenderDay ? (
-                onRenderDay(prefixDates[i])
-              ) : (
-                prefixDates[i].getDate()
-              )
-            ) : (
-              <>&nbsp;</>
-            )}
+            {showPrefixDates &&
+              onRenderDayTitle &&
+              onRenderDayTitle(prefixDates[i])}
+            {showPrefixDates &&
+              !onRenderDayTitle &&
+              formatDate(prefixDates[i], "d")}
+            {!showPrefixDates && <>&nbsp;</>}
           </Cell>
         );
       })}
@@ -125,15 +121,11 @@ function Calendar({
             currentDate.getDate() === i + 1 && css["selected-day"]
           )}
         >
-          {onRenderDay
-            ? onRenderDay(
-                new Date(
-                  currentDate.getFullYear(),
-                  currentDate.getMonth(),
-                  i + 1
-                )
-              )
-            : i + 1}
+          {onRenderDayTitle &&
+            onRenderDayTitle(
+              new Date(currentDate.getFullYear(), currentDate.getMonth(), i + 1)
+            )}
+          {!onRenderDayTitle && <>{i + 1}</>}
         </Cell>
       ))}
 
@@ -143,15 +135,13 @@ function Calendar({
             key={`postfix-${i}`}
             className={clsx(showPostfixDates && css["day"])}
           >
-            {showPostfixDates ? (
-              onRenderDay ? (
-                onRenderDay(postfixDates[i])
-              ) : (
-                postfixDates[i].getDate()
-              )
-            ) : (
-              <>&nbsp;</>
-            )}
+            {showPostfixDates &&
+              onRenderDayTitle &&
+              onRenderDayTitle(postfixDates[i])}
+            {showPostfixDates &&
+              !onRenderDayTitle &&
+              formatDate(postfixDates[i], "d")}
+            {!showPostfixDates && <>&nbsp;</>}
           </Cell>
         );
       })}

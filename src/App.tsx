@@ -22,8 +22,8 @@ function App() {
       <Calendar
         date={date}
         onChange={handleChangeDate}
-        onRenderDay={handleRenderDay}
-        onRenderMonthTitle={handleRenderMonthTitle}
+        // onRenderDayTitle={handleRenderDay}
+        // onRenderMonthTitle={handleRenderMonthTitle}
       />
     </div>
   );
