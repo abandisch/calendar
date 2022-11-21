@@ -1,7 +1,7 @@
-.cell {
-  border-right: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.day {
+  height: 100px;
+}
+
+.day-scroll {
+  overflow: scroll;
 }

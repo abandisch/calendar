@@ -19,6 +19,7 @@ interface Props {
   showPostfixDates?: boolean;
   weekCount?: number;
   events?: { [key: string]: Event[] };
+  scrollableEvents?: boolean;
   onClickEvent?: (event: Event) => void;
   onChange?: (date: Date) => void;
   onRenderDayTitle?: (date: Date) => React.ReactElement;
@@ -35,6 +36,7 @@ function Calendar({
   showPostfixDates = true,
   weekCount = 6,
   events,
+  scrollableEvents = false,
   onChange,
   onClickEvent,
   onRenderDayTitle,
@@ -123,6 +125,7 @@ function Calendar({
                   <DayEvents
                     events={events[formatDate(prefixDates[i], "yyyy-MM-dd")]}
                     onClick={onClickEvent}
+                    enableScroll={scrollableEvents}
                   />
                 )}
               </div>
@@ -149,6 +152,7 @@ function Calendar({
                 <DayEvents
                   events={events[formatDate(d, "yyyy-MM-dd")]}
                   onClick={onClickEvent}
+                  enableScroll={scrollableEvents}
                 />
               )}
             </div>
@@ -183,6 +187,7 @@ function Calendar({
                     <DayEvents
                       events={events[formatDate(postfixDates[i], "yyyy-MM-dd")]}
                       onClick={onClickEvent}
+                      enableScroll={scrollableEvents}
                     />
                   )}
               </div>

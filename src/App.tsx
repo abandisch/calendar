@@ -43,7 +43,7 @@ const generateEvents = (date = new Date()) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   for (let i = 0; i < daysInMonth; i++) {
     const day = i + 1;
-    const randomCount = Math.floor(Math.random() * 7);
+    const randomCount = Math.floor(Math.random() * 27);
     const key = format(new Date(year, month, day), "yyyy-MM-dd");
     events[key] = [];
 
@@ -95,6 +95,7 @@ function App() {
       <Calendar
         date={date}
         events={events}
+        scrollableEvents={false}
         onChange={handleChangeDate}
         onClickEvent={handleClickEvent}
         // onRenderDayTitle={handleRenderDay}

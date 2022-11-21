@@ -1,21 +1,25 @@
+import clsx from "clsx";
 import type { Event } from "./types";
 import css from "./dayevents.module.css";
 
 interface Props {
   events: Event[];
+  enableScroll?: boolean;
   onClick?: (event: Event) => void;
 }
 
-function DayEvents({ events, onClick }: Props) {
+function DayEvents({ events, enableScroll, onClick }: Props) {
   const handleClick =
     (event: Event) => (clickEvent: React.MouseEvent<HTMLElement>) => {
       clickEvent.stopPropagation();
       onClick && onClick(event);
     };
 
+  const _events = enableScroll ? events : events.slice(0, 4);
+
   return (
-    <div style={{ zIndex: 100 }}>
-      {events.slice(0, 3).map((e) => (
+    <div className={clsx(css["day"], enableScroll && css["day-scroll"])}>
+      {_events.map((e) => (
         <div
           key={e.id}
           className={css["day-event"]}
@@ -25,8 +29,8 @@ function DayEvents({ events, onClick }: Props) {
           {e.title}
         </div>
       ))}
-      {events.length > 3 && (
-        <div className={css["day-event"]}>+{events.length - 3} more ...</div>
+      {!enableScroll && events.length > 4 && (
+        <div className={css["day-event"]}>+{events.length - 4} more ...</div>
       )}
     </div>
   );
